@@ -63,6 +63,7 @@ public class ListController {
 
         }catch (Exception e){
             e.printStackTrace();
+            return e.getMessage();
         }
         return "success";
     }

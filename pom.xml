@@ -40,6 +40,11 @@
             <scope>system</scope>
             <systemPath>${basedir}/lib/shell-util-1.0.1.jar</systemPath>
         </dependency>
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>1.2.72</version>
+        </dependency>
     </dependencies>
 
     <dependencyManagement>
@@ -65,7 +70,6 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-
         </dependencies>
     </dependencyManagement>
     <build>

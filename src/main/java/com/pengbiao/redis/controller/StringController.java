@@ -26,6 +26,7 @@ public class StringController {
             System.out.println(stringRedisTemplate.opsForValue().get("int")); // output: 6, 这里如果使用redisTemplate会存在NPE
         }catch (Exception e){
             e.printStackTrace();
+            return e.getMessage();
         }
         return "success";
     }

@@ -23,11 +23,17 @@ public class SetController {
     @GetMapping("/setSetValue")
     public String setValue(){
         try{
-            emptySet("set1");
-            emptySet("set2");
-
+            //删除不存在的依然不会报错，就想查询一个不存在的集合同样不会报错[]
+            stringRedisTemplate.delete("set1");
+            stringRedisTemplate.delete("set2");
+            stringRedisTemplate.delete("diff1");
+            stringRedisTemplate.delete("union1");
+            printSetMembers("set1");
+            printSetMembers("set2");
+            printSetMembers("diff1");
+            printSetMembers("union1");
             // 分别向set1和set2集合添加元素
-            stringRedisTemplate.opsForSet().add("set1", "v1", "v1", "v2", "v3", "v4", "v5");
+            stringRedisTemplate.opsForSet().add("set1", "v11", "v1", "v21", "v3", "v4", "v5");
             stringRedisTemplate.opsForSet().add("set2", "v2", "v4", "v6", "v8");
             System.out.println(stringRedisTemplate.opsForSet().members("set1")); // [v4, v2, v3, v1, v5]
             System.out.println(stringRedisTemplate.opsForSet().members("set2")); // [v6, v4, v2, v8]
@@ -53,7 +59,7 @@ public class SetController {
 
             // 求差集并使用新的集合保存
             setOps.diffAndStore("set2", "diff1");
-            printRedisList("diff1");
+            printSetMembers("diff1");
 
             // 求并集
             Set union = setOps.union("set2");
@@ -65,18 +71,9 @@ public class SetController {
 
         }catch (Exception e){
             e.printStackTrace();
+            return e.getMessage();
         }
         return "success";
-    }
-
-
-    /**
-     * 清空已存在的set集合，避免多次操作过程中历史数据对示例操作的影响
-     */
-    private void emptySet(String setKey) {
-        if (!stringRedisTemplate.opsForSet().members(setKey).isEmpty()) {
-            stringRedisTemplate.opsForSet().members(setKey).clear();
-        }
     }
 
     /**
@@ -87,21 +84,5 @@ public class SetController {
         System.out.println(setOps.members());
     }
 
-    /**
-     * 使用List中的range方法来获取list中的所有元素
-     * range方法不会像pop方法一样将元素从redis中删除
-     */
-    private void printRedisList(String listKey) {
-        BoundListOperations listOps = stringRedisTemplate.boundListOps(listKey);
-        Long size = listOps.size();
-        List elemetns = listOps.range(0, size - 1);
 
-        StringBuilder sb = new StringBuilder();
-        sb.append("List: " + listKey + ", elements: ");
-        for (int i = 0; i < elemetns.size(); i++) {
-            sb.append(elemetns.get(i) + ", ");
-        }
-        System.out.println(sb.toString());
-    }
-    //https://blog.csdn.net/yitian_z/article/details/104265069
 }

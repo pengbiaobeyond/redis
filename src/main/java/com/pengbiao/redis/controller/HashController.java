@@ -46,6 +46,7 @@ public class HashController {
             System.out.println(stringRedisTemplate.opsForHash().get("hash1", "hash1_key1"));
         }catch (Exception e){
             e.printStackTrace();
+            return e.getMessage();
         }
 
         return "success";
